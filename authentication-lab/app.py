@@ -27,9 +27,10 @@ def signin():
     if request.method == 'POST':
        email = request.form['email']
        password = request.form['password']
+       return redirect(url_for('add_tweet'))
        try:
             login_session['user'] = auth.sign_in_with_email_and_password(email, password)
-           return redirect(url_for('add_tweet'))
+            return redirect(url_for('home'))
        except:
            error = "Authentication failed"
 
@@ -41,9 +42,10 @@ def signup():
     if request.method == 'POST':
        email = request.form['email']
        password = request.form['password']
-       return redirect(urlfor['add_tweet'])
+       return redirect(url_for('add_tweet'))
        try:
             login_session['user'] =  auth.create_user_with_email_and_password(email, password)
+            return redirect(url_for('add_tweet'))
        except:
            error = "authentication failed"
     return render_template("signup.html")
@@ -55,6 +57,12 @@ def signup():
 def add_tweet():
     return render_template("add_tweet.html")
 
+
+@app.route('/signout')
+def signout():
+    login_session['user'] = None
+    auth.current_user = None
+    return redirect(url_for('signin'))
 
 if __name__ == '__main__':
     app.run(debug=True)
