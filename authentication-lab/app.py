@@ -47,7 +47,7 @@ def signup():
        username = request.form['username']
        bio = request.form['bio']
 
-       user = {"full_name": "full_name", "username": "username","bio":"bio"}
+       user = {"full_name": full_name, "username": username,"bio":bio}
        try:
             login_session['user'] =  auth.create_user_with_email_and_password(email, password)
             db.child("Users").child(login_session['user']['localId']).set(user)
@@ -65,8 +65,7 @@ def add_tweet():
     if request.method == 'POST':
         title = request.form['title']
         text = request.form['text']
-
-        tweet = {"text": text, "title": title,"username":(db.child("user")[localId]).get().val()["username"]}
+        tweet = {"text": text, "title": title,"UID":login_session["user"]['localId']}
         try:
             db.child("tweet").push(tweet)
             return redirect(url_for('add_tweet'))
@@ -75,16 +74,17 @@ def add_tweet():
     return render_template("add_tweet.html")
 
 
-
-   
-
-
-
-@app.route('/signout')
+@app.route('/signout', methods=['GET', 'POST'])
 def signout():
     login_session['user'] = None
     auth.current_user = None
     return redirect(url_for('signin'))
+
+    @app.route('/all_tweets')
+    def all_tweets():
+        tw= db.child('Tweets').get().val().values()
+        print (tweets)
+        return render_template("tweets.html", tweets= tw)
 
 if __name__ == '__main__':
     app.run(debug=True)

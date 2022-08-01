@@ -5,7 +5,26 @@
     <title>Title</title>
 </head>
 <body>
+    <form method="post" action="/add_tweet">
+
+        <div>
+            <label>title*</label>
+            <div>
+                <input type="title"  name="title" required>
+            </div>
+        </div>
+        <div>
+            <label>text*</label>
+            <div>
+                <input type="text"  name="text" maxlength="280">
+            </div>
+        </div>
+
+        <div>   
+            <input type="submit" value="Submit">
+        </div>
+    </form>
     Great Job!
-    <a href="/"><button>signout</button></a>
+    <a href="/"><button>add tweet</button></a>
 </body>
 </html>
