@@ -82,9 +82,9 @@ def signout():
 
     @app.route('/all_tweets')
     def all_tweets():
-        tw= db.child('Tweets').get().val().values()
+        tweets= db.child('Tweets').get().val().values()
         print (tweets)
-        return render_template("tweets.html", tweets= tw)
+        return render_template("tweets.html", tweets= tweets)
 
 if __name__ == '__main__':
     app.run(debug=True)
