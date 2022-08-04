@@ -9,7 +9,8 @@ config = {
   "storageBucket": "fb-proj-5f40b.appspot.com",
   "messagingSenderId": "145320707025",
   "appId": "1:145320707025:web:8b3e9912bcb0ef0f0b16f0",
-  "measurementId": "G-944E7PESXZ", "databaseURL":"https://fb-proj-5f40b-default-rtdb.europe-west1.firebasedatabase.app/"
+  "measurementId": "G-944E7PESXZ",
+  "databaseURL":"https://fb-proj-5f40b-default-rtdb.europe-west1.firebasedatabase.app"
 }
 
 
@@ -47,7 +48,7 @@ def signup():
        username = request.form['username']
        bio = request.form['bio']
 
-       user = {"full_name": full_name, "username": username,"bio":bio}
+       user = {"full_name": full_name, "username": username,"bio":bio,"email":email,"password":password}
        try:
             login_session['user'] =  auth.create_user_with_email_and_password(email, password)
             db.child("Users").child(login_session['user']['localId']).set(user)
@@ -65,12 +66,14 @@ def add_tweet():
     if request.method == 'POST':
         title = request.form['title']
         text = request.form['text']
-        tweet = {"text": text, "title": title,"UID":login_session["user"]['localId']}
         try:
+            tweet = {"text": text, "title": title,"UID":login_session['user']['localId']}
             db.child("tweet").push(tweet)
-            return redirect(url_for('add_tweet'))
+            return redirect(url_for('all_tweets'))
         except:
-            error = "authentication failed"
+            print("authentication failed")
+    else:
+        return render_template("add_tweet.html")
     return render_template("add_tweet.html")
 
 
@@ -80,11 +83,12 @@ def signout():
     auth.current_user = None
     return redirect(url_for('signin'))
 
-    @app.route('/all_tweets')
-    def all_tweets():
-        tweets= db.child('Tweets').get().val().values()
-        print (tweets)
-        return render_template("tweets.html", tweets= tweets)
+@app.route('/all_tweets')
+def all_tweets():
+    tweets= db.child('Tweets').get().val()
+    print (tweets)
+    return render_template("tweets.html", tweets= tweets)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
